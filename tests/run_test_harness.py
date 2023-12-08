@@ -140,8 +140,8 @@ if __name__ == '__main__':
           "=================")
 
     runtimes_of_test = {}
-    impl_perf_ok = {impl: True for impl in LIST_OF_IMPLEMENTATIONS}
-
+    impl_perf_ok = {impl: True for impl in LIST_OF_IMPLEMENTATIONS}    
+    
     # run all tests
     for (test_name, num_threads) in test_names_and_num_threads:
         
@@ -167,8 +167,10 @@ if __name__ == '__main__':
         is_references = [True, False]
         all_runtimes = {}
         for i in range(NUM_TEST_RUNS):
+            # print("Running test %d/%d" % (i+1, NUM_TEST_RUNS))
             for (cmd, is_reference) in zip(cmds, is_references):
                 cmd = "%s %s" % (cmd, test_name)
+                # print("Running command: %s" % cmd)
                 runtimes = run_test(cmd, is_reference=is_reference)
                 for key in runtimes:
                     if key not in all_runtimes:

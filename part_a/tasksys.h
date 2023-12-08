@@ -7,7 +7,7 @@
 #include <atomic>
 #include <queue>
 #include <mutex>
-
+#include <condition_variable>
 /*
  * TaskSystemSerial: This class is the student's implementation of a
  * serial task execution engine.  See definition of ITaskSystem in
@@ -67,7 +67,7 @@ private:
     std::vector<std::thread> threads;
     int num_tasks_;
     bool exit_flag_;
-    std::atomic<int> num_tasks_done_;
+    std::atomic<int> num_tasks_remaining_;
     std::queue<int> tasks_;
     std::mutex tasks_mutex_;
     IRunnable *runnable_{};
@@ -90,6 +90,21 @@ public:
     TaskID runAsyncWithDeps(IRunnable *runnable, int num_total_tasks,
                             const std::vector<TaskID> &deps);
     void sync();
+
+private:
+    std::vector<std::thread> threads;
+    int num_tasks_;
+    bool exit_flag_;
+    std::atomic<int> num_tasks_done_;
+    std::queue<int> tasks_;
+    std::mutex tasks_mutex_;
+    IRunnable *runnable_{};
+    void func();
+    std::condition_variable *queue_condition_ = new std::condition_variable();
+    std::condition_variable *all_done_condition_ = new std::condition_variable();
+    int num_waiting_threads_;
+    std::atomic<int> num_tasks_remaining_;
+    std::mutex all_done_mutex_;
 };
 
 #endif
